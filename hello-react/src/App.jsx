@@ -28,9 +28,20 @@ export default function App() {
 		setData([{ id, name, done: false }, ...data]);
 	}
 
+	function toggle(id) {
+		setData(
+			data.map(item => {
+				if (item.id == id) {
+					item.done = !item.done;
+				}
+				return item;
+			}),
+		);
+	}
+
 	return (
 		<div>
-			<Header count={data.length} />
+			<Header count={data.filter(item => !item.done).length} />
 			<Container
 				sx={{ mt: 4 }}
 				maxWidth="sm">
@@ -51,15 +62,33 @@ export default function App() {
 					/>
 				</form>
 				<List>
-					{data.map(item => {
-						return (
-							<Item
-								key={item.id}
-								item={item}
-								remove={remove}
-							/>
-						);
-					})}
+					{data
+						.filter(item => !item.done)
+						.map(item => {
+							return (
+								<Item
+									key={item.id}
+									item={item}
+									remove={remove}
+									toggle={toggle}
+								/>
+							);
+						})}
+				</List>
+
+				<List>
+					{data
+						.filter(item => item.done)
+						.map(item => {
+							return (
+								<Item
+									key={item.id}
+									item={item}
+									remove={remove}
+									toggle={toggle}
+								/>
+							);
+						})}
 				</List>
 			</Container>
 		</div>
