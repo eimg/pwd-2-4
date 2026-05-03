@@ -1,11 +1,17 @@
 {
-  "devDependencies": {
-    "@babel/cli": "^7.28.6",
-    "@babel/core": "^7.29.0",
-    "@babel/preset-react": "^7.28.5",
-    "babel-loader": "^10.1.1",
-    "webpack": "^5.106.2",
-    "webpack-cli": "^7.0.2",
-    "webpack-dev-server": "^5.2.3"
-  }
+	"type": "module",
+	"devDependencies": {
+		"@babel/cli": "^7.28.6",
+		"@babel/core": "^7.29.0",
+		"@babel/preset-react": "^7.28.5",
+		"babel-loader": "^10.1.1",
+		"webpack": "^5.106.2",
+		"webpack-cli": "^7.0.2",
+		"webpack-dev-server": "^5.2.3"
+	},
+	"dependencies": {
+		"@faker-js/faker": "^10.4.0",
+		"bcrypt": "^6.0.0",
+		"jsonwebtoken": "^9.0.3"
+	}
 }
