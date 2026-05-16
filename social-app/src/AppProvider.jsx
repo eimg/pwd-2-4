@@ -1,9 +1,9 @@
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import { CssBaseline } from "@mui/material";
 
-import App from "./App";
-
 import { useState, createContext, useMemo, useContext } from "react";
+
+import AppRouter from "./AppRouter";
 
 const AppContext = createContext();
 
@@ -21,7 +21,7 @@ export default function AppProvider() {
 		<AppContext.Provider
 			value={{ mode, setMode, openDrawer, setOpenDrawer }}>
 			<ThemeProvider theme={theme}>
-				<App />
+				<AppRouter />
 				<CssBaseline />
 			</ThemeProvider>
 		</AppContext.Provider>

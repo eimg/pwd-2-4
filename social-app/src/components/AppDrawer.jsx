@@ -20,8 +20,12 @@ import {
 import { grey } from "@mui/material/colors";
 import { useApp } from "../AppProvider";
 
+import { useNavigate } from "react-router";
+
 export default function AppDrawer() {
 	const { openDrawer, setOpenDrawer } = useApp();
+
+    const navigate = useNavigate();
 
 	return (
 		<Drawer
@@ -32,7 +36,7 @@ export default function AppDrawer() {
 
 			<List>
 				<ListItem disablePadding>
-					<ListItemButton>
+					<ListItemButton onClick={() => navigate("/")}>
 						<ListItemIcon>
 							<HomeIcon />
 						</ListItemIcon>
@@ -59,13 +63,13 @@ export default function AppDrawer() {
 			</List>
 
 			<List>
-				<ListItemButton>
+				<ListItemButton onClick={() => navigate("/register")}>
 					<ListItemIcon>
 						<RegisterIcon />
 					</ListItemIcon>
 					<ListItemText primary="Register" />
 				</ListItemButton>
-				<ListItemButton>
+				<ListItemButton onClick={() => navigate("/login")}>
 					<ListItemIcon>
 						<LoginIcon />
 					</ListItemIcon>

@@ -12,9 +12,9 @@ export default function Header() {
 	const { mode, setMode, setOpenDrawer } = useApp();
 
 	return (
-		<AppBar>
+		<AppBar position="static">
 			<Toolbar>
-                <IconButton onClick={() => setOpenDrawer(true)}>
+                <IconButton color="inherit" onClick={() => setOpenDrawer(true)}>
                     <MenuIcon />
                 </IconButton>
 				<Typography sx={{ flexGrow: 1, ml: 2 }}>Social</Typography>
