@@ -25,7 +25,8 @@
 	"main": "index.js",
 	"scripts": {
 		"test": "echo \"Error: no test specified\" && exit 1",
-		"dev": "tsx watch index.ts"
+		"dev": "tsx watch index.ts",
+        "fresh": "npx prisma migrate reset -f && tsx seed/main.ts"
 	},
 	"keywords": [],
 	"author": "",
