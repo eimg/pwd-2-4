@@ -23,7 +23,7 @@ import { useApp } from "../AppProvider";
 import { useNavigate } from "react-router";
 
 export default function AppDrawer() {
-	const { openDrawer, setOpenDrawer } = useApp();
+	const { openDrawer, setOpenDrawer, auth, setAuth } = useApp();
 
     const navigate = useNavigate();
 
@@ -47,35 +47,43 @@ export default function AppDrawer() {
 
 			<Divider />
 
-			<List>
-				<ListItemButton>
-					<ListItemIcon>
-						<ProfileIcon />
-					</ListItemIcon>
-					<ListItemText primary="Profile" />
-				</ListItemButton>
-				<ListItemButton>
-					<ListItemIcon>
-						<LogoutIcon />
-					</ListItemIcon>
-					<ListItemText primary="Logout" />
-				</ListItemButton>
-			</List>
+			{auth && (
+				<List>
+					<ListItemButton>
+						<ListItemIcon>
+							<ProfileIcon />
+						</ListItemIcon>
+						<ListItemText primary="Profile" />
+					</ListItemButton>
+					<ListItemButton onClick={() => {
+                        localStorage.removeItem("token");
+                        setAuth(undefined);
+                        navigate("/");
+                    }}>
+						<ListItemIcon>
+							<LogoutIcon />
+						</ListItemIcon>
+						<ListItemText primary="Logout" />
+					</ListItemButton>
+				</List>
+			)}
 
-			<List>
-				<ListItemButton onClick={() => navigate("/register")}>
-					<ListItemIcon>
-						<RegisterIcon />
-					</ListItemIcon>
-					<ListItemText primary="Register" />
-				</ListItemButton>
-				<ListItemButton onClick={() => navigate("/login")}>
-					<ListItemIcon>
-						<LoginIcon />
-					</ListItemIcon>
-					<ListItemText primary="Login" />
-				</ListItemButton>
-			</List>
+			{!auth && (
+				<List>
+					<ListItemButton onClick={() => navigate("/register")}>
+						<ListItemIcon>
+							<RegisterIcon />
+						</ListItemIcon>
+						<ListItemText primary="Register" />
+					</ListItemButton>
+					<ListItemButton onClick={() => navigate("/login")}>
+						<ListItemIcon>
+							<LoginIcon />
+						</ListItemIcon>
+						<ListItemText primary="Login" />
+					</ListItemButton>
+				</List>
+			)}
 		</Drawer>
 	);
 }

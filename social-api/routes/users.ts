@@ -3,7 +3,18 @@ import { prisma } from "../lib/prosma";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 
+import { auth } from "../middlewares/auth";
+
 export const router = express.Router();
+
+router.get("/users/verify", auth, async (req, res) => {
+    const { id } = res.locals.user;
+    const user = await prisma.user.findUnique({
+        where: { id },
+    });
+
+    res.json(user);
+});
 
 router.get("/users", async (req, res) => {
 	const users = await prisma.user.findMany();
