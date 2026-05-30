@@ -25,7 +25,7 @@ const router = createBrowserRouter([
 				element: <Register />,
 			},
 			{
-				path: "/view",
+				path: "/view/:id",
 				element: <View />,
 			},
 		],

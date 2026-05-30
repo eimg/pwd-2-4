@@ -16,7 +16,7 @@ import {
 
 import { useNavigate } from "react-router";
 
-export default function PostCard() {
+export default function PostCard({ post }) {
     const navigate = useNavigate();
 
     return (
@@ -26,15 +26,12 @@ export default function PostCard() {
 					<Avatar sx={{ width: 52, height: 52, background: green[500], }} />
 				</Box>
 				<Box>
-					<Typography>Alice</Typography>
+					<Typography>{post.user.name}</Typography>
 					<Typography sx={{ color: green[500], mb: 1 }}>
-						a few seconds agao
+						{post.created}
 					</Typography>
-					<Typography onClick={() => navigate("/view")}>
-						Lorem ipsum dolor sit, amet consectetur adipisicing
-						elit. Necessitatibus, enim vel dicta commodi odit et
-						voluptas in mollitia, numquam quas optio quod vero
-						doloremque eum maxime a assumenda dignissimos iure.
+					<Typography onClick={() => navigate(`/view/${post.id}`)}>
+						{post.body}
 					</Typography>
 				</Box>
 			</Box>
@@ -53,7 +50,7 @@ export default function PostCard() {
 						<CommentIcon />
 					</IconButton>
 					<Button size="sm" variant="text">
-						5
+						{post.comments.length}
 					</Button>
 				</ButtonGroup>
 			</Box>

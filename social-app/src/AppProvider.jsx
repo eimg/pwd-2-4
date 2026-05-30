@@ -3,9 +3,12 @@ import { CssBaseline } from "@mui/material";
 
 import { useState, createContext, useMemo, useContext, useEffect } from "react";
 
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+
 import AppRouter from "./AppRouter";
 
 const AppContext = createContext();
+const queryClient = new QueryClient();
 
 export default function AppProvider() {
 	const [mode, setMode] = useState("dark");
@@ -40,10 +43,12 @@ export default function AppProvider() {
 	return (
 		<AppContext.Provider
 			value={{ mode, setMode, openDrawer, setOpenDrawer, auth, setAuth }}>
-			<ThemeProvider theme={theme}>
-				<AppRouter />
-				<CssBaseline />
-			</ThemeProvider>
+			<QueryClientProvider client={queryClient}>
+				<ThemeProvider theme={theme}>
+					<AppRouter />
+					<CssBaseline />
+				</ThemeProvider>
+			</QueryClientProvider>
 		</AppContext.Provider>
 	);
 }
