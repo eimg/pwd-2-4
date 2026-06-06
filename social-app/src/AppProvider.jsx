@@ -6,6 +6,7 @@ import { useState, createContext, useMemo, useContext, useEffect } from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 import AppRouter from "./AppRouter";
+import { API, authHeaders } from "./lib/api";
 
 const AppContext = createContext();
 const queryClient = new QueryClient();
@@ -16,14 +17,11 @@ export default function AppProvider() {
 	const [auth, setAuth] = useState();
 
     useEffect(() => {
-        const api = "http://localhost:8800";
         const token = localStorage.getItem("token");
         
         if(token) {
-            fetch(`${api}/users/verify`, {
-                headers: {
-                    Authorization: `Bearer ${token}`
-                }
+            fetch(`${API}/users/verify`, {
+                headers: authHeaders()
             }).then(async res => {
                 if(res.ok) {
                     setAuth(await res.json());

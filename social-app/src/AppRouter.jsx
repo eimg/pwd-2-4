@@ -6,6 +6,7 @@ import Home from "./pages/Home";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import View from "./pages/View";
+import Profile from "./pages/Profile";
 
 const router = createBrowserRouter([
 	{
@@ -27,6 +28,10 @@ const router = createBrowserRouter([
 			{
 				path: "/view/:id",
 				element: <View />,
+			},
+			{
+				path: "/profile/:id",
+				element: <Profile />,
 			},
 		],
 	},

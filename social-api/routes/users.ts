@@ -4,6 +4,8 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 
 import { auth } from "../middlewares/auth";
+import { optionalAuth } from "../middlewares/optionalAuth";
+import { formatPosts, postInclude } from "../lib/posts";
 
 export const router = express.Router();
 
@@ -20,6 +22,28 @@ router.get("/users", async (req, res) => {
 	const users = await prisma.user.findMany();
 
 	res.json(users);
+});
+
+router.get("/users/:id", optionalAuth, async (req, res) => {
+	const id = Number(req.params.id);
+	const userId = res.locals.user?.id as number | undefined;
+
+	const user = await prisma.user.findUnique({
+		where: { id },
+		include: {
+			posts: {
+				orderBy: { id: "desc" },
+				include: postInclude(userId),
+			},
+		},
+	});
+
+	if (!user) {
+		return res.status(404).json({ msg: "user not found" });
+	}
+
+	const { password, posts, ...rest } = user;
+	res.json({ ...rest, posts: formatPosts(posts) });
 });
 
 router.post("/users", async (req, res) => {

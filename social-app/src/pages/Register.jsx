@@ -3,8 +3,7 @@ import { useForm } from "react-hook-form";
 
 import { useState } from "react";
 import { useNavigate } from "react-router";
-
-const api = "http://localhost:8800";
+import { API } from "../lib/api";
 
 export default function Register() {
 	const navigate = useNavigate();
@@ -18,7 +17,7 @@ export default function Register() {
 	} = useForm();
 
 	const create = data => {
-		fetch(`${api}/users`, {
+		fetch(`${API}/users`, {
 			method: "POST",
 			body: JSON.stringify(data),
 			headers: {

@@ -49,7 +49,7 @@ export default function AppDrawer() {
 
 			{auth && (
 				<List>
-					<ListItemButton>
+					<ListItemButton onClick={() => navigate(`/profile/${auth.id}`)}>
 						<ListItemIcon>
 							<ProfileIcon />
 						</ListItemIcon>

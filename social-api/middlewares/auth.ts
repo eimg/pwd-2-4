@@ -9,9 +9,13 @@ export function auth(
 	const authorization = req.headers.authorization;
 	const token = authorization?.split(" ")[1];
 	if (token) {
-		const user = jwt.verify(token, process.env.JWT_SECRET as string);
-		res.locals.user = user;
-		next();
+		try {
+			const user = jwt.verify(token, process.env.JWT_SECRET as string);
+			res.locals.user = user;
+			next();
+		} catch {
+			res.status(401).json({ msg: "missing or invalid token" });
+		}
 	} else {
 		res.status(401).json({ msg: "missing or invalid token" });
 	}

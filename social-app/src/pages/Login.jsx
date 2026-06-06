@@ -4,8 +4,7 @@ import { useForm } from "react-hook-form";
 import { useState } from "react";
 import { useApp } from "../AppProvider";
 import { useNavigate } from "react-router";
-
-const api = "http://localhost:8800";
+import { API } from "../lib/api";
 
 export default function Login() {
 	const [error, setError] = useState();
@@ -19,7 +18,7 @@ export default function Login() {
 	} = useForm();
 
 	const login = data => {
-		fetch(`${api}/users/login`, {
+		fetch(`${API}/users/login`, {
 			method: "POST",
 			body: JSON.stringify(data),
 			headers: {
