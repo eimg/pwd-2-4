@@ -3,6 +3,8 @@ export type PostType = {
     body: string;
     user: UserType;
     comments: CommentType[];
+    likes: [];
+    created: string;
 }
 
 export type UserType = {

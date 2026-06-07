@@ -1,7 +1,7 @@
 import { Text, TouchableOpacity, View } from "react-native";
 import Ionicons from "@expo/vector-icons/Ionicons";
-
-import type { PostType } from "@/types/globla";
+import { formatDistance } from "date-fns";
+import type { PostType } from "@/types/global";
 
 export default function PostCard({ post }: { post: PostType }) {
 	return (
@@ -23,14 +23,16 @@ export default function PostCard({ post }: { post: PostType }) {
 						alignItems: "center",
 					}}>
 					<Text style={{ fontSize: 18, color: "white" }}>
-                        {post.user.name[0].toUpperCase()}
-                    </Text>
+						{post.user.name[0].toUpperCase()}
+					</Text>
 				</View>
 				<View style={{ flexShrink: 1 }}>
 					<Text style={{ fontWeight: "bold", fontSize: 16 }}>
 						{post.user.name}
 					</Text>
-					<Text style={{ color: "green" }}>A few seconds ago</Text>
+					<Text style={{ color: "green" }}>
+						{formatDistance(post.created, new Date())}
+					</Text>
 					<Text style={{ fontSize: 16, marginTop: 5 }}>
 						{post.body}
 					</Text>
@@ -56,7 +58,7 @@ export default function PostCard({ post }: { post: PostType }) {
 						/>
 					</TouchableOpacity>
 					<TouchableOpacity>
-						<Text>10</Text>
+						<Text>{post.likes ? post.likes.length : 0}</Text>
 					</TouchableOpacity>
 				</View>
 				<View
@@ -72,7 +74,7 @@ export default function PostCard({ post }: { post: PostType }) {
 						/>
 					</TouchableOpacity>
 					<TouchableOpacity>
-						<Text>5</Text>
+						<Text>{post.comments ? post.comments.length : 0}</Text>
 					</TouchableOpacity>
 				</View>
 			</View>
