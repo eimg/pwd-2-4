@@ -3,6 +3,8 @@ import Ionicons from "@expo/vector-icons/Ionicons";
 import { formatDistance } from "date-fns";
 import type { PostType } from "@/types/global";
 
+import { router } from "expo-router";
+
 export default function PostCard({ post }: { post: PostType }) {
 	return (
 		<View
@@ -33,9 +35,11 @@ export default function PostCard({ post }: { post: PostType }) {
 					<Text style={{ color: "green" }}>
 						{formatDistance(post.created, new Date())}
 					</Text>
-					<Text style={{ fontSize: 16, marginTop: 5 }}>
-						{post.body}
-					</Text>
+					<TouchableOpacity onPress={() => router.push(`/view/${post.id}`)}>
+						<Text style={{ fontSize: 16, marginTop: 5 }}>
+							{post.body}
+						</Text>
+					</TouchableOpacity>
 				</View>
 			</View>
 			<View

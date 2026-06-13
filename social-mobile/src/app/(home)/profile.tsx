@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { Text, TextInput, TouchableOpacity, View } from "react-native";
 
+import AsyncStorage from "@react-native-async-storage/async-storage";
+
 import { useApp } from "../_layout";
 
 export default function Profile() {
@@ -20,6 +22,7 @@ export default function Profile() {
 
 		if (res.ok) {
 			const { user, token } = await res.json();
+            await AsyncStorage.setItem("token", token);
 			setAuth(user);
 		} else {
             alert("Unable to login");
