@@ -3,9 +3,13 @@ import { Text, View, ScrollView } from "react-native";
 
 import { useQuery } from "@tanstack/react-query";
 import { PostType } from "@/types/global";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 async function fetchPosts(): Promise<PostType[]> {
-	const res = await fetch("http://localhost:8800/posts");
+	const token = await AsyncStorage.getItem("token");
+	const res = await fetch("http://localhost:8800/posts", {
+		headers: token ? { Authorization: `Bearer ${token}` } : undefined,
+	});
 	return res.json();
 }
 

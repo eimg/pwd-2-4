@@ -5,7 +5,7 @@ import cors from "cors";
 app.use(cors());
 
 app.use(express.json());
-app.use(express.urlencoded());
+app.use(express.urlencoded({ extended: true }));
 
 import { router as usersRouter } from "./routes/users";
 app.use(usersRouter);
@@ -16,6 +16,16 @@ app.use(postsRouter);
 import { router as commentsRouter } from "./routes/comments";
 app.use(commentsRouter);
 
-app.listen(8800, () => {
-	console.log("Social API running at 8800...");
+const port = Number(process.env.PORT ?? 8800);
+
+const server = app.listen(port, () => {
+	console.log(`Social API running at ${port}...`);
 });
+server.ref();
+
+const keepAlive = setInterval(() => {}, 2 ** 31 - 1);
+server.on("close", () => {
+	clearInterval(keepAlive);
+});
+
+export { app, server };

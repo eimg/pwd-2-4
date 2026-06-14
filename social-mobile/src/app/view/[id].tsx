@@ -1,5 +1,6 @@
-import { useLocalSearchParams } from "expo-router";
+import { router, useLocalSearchParams } from "expo-router";
 import {
+	Alert,
 	Text,
 	View,
 	TextInput,
@@ -8,28 +9,93 @@ import {
 } from "react-native";
 
 import { useQuery } from "@tanstack/react-query";
+import Ionicons from "@expo/vector-icons/Ionicons";
 import PostCard from "@/components/post-card";
 import { useState } from "react";
 import { PostType } from "@/types/global";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { queryClient, useApp } from "../_layout";
 
 async function fetchPost(id: string): Promise<PostType> {
-	const res = await fetch(`http://localhost:8800/posts/${id}`);
+	const token = await AsyncStorage.getItem("token");
+	const res = await fetch(`http://localhost:8800/posts/${id}`, {
+		headers: token ? { Authorization: `Bearer ${token}` } : undefined,
+	});
 	return res.json();
 }
 
 export default function Detail() {
 	const { id } = useLocalSearchParams();
+	const postId = Array.isArray(id) ? id[0] : id;
 
 	const [comment, setComment] = useState("");
+	const { auth } = useApp()!;
 
 	const {
 		data: post,
 		error,
 		isLoading,
 	} = useQuery({
-		queryKey: ["posts", id],
-		queryFn: () => fetchPost(id as string),
+		queryKey: ["posts", postId],
+		queryFn: () => fetchPost(postId),
 	});
+
+	const addComment = async () => {
+		const body = comment.trim();
+
+		if (!auth) {
+			Alert.alert("Login required", "You need to login before commenting.");
+			return;
+		}
+
+		if (!body) {
+			return;
+		}
+
+		const token = await AsyncStorage.getItem("token");
+		const res = await fetch(`http://localhost:8800/posts/${postId}/comments`, {
+			method: "POST",
+			body: JSON.stringify({ body }),
+			headers: {
+				"Content-Type": "application/json",
+				Authorization: `Bearer ${token}`,
+			},
+		});
+
+		if (res.ok) {
+			setComment("");
+			await queryClient.invalidateQueries({ queryKey: ["posts", postId] });
+			await queryClient.invalidateQueries({ queryKey: ["posts"] });
+		} else {
+			Alert.alert("Unable to add comment");
+		}
+	};
+
+	const deleteComment = (commentId: number) => {
+		Alert.alert("Delete comment?", "This cannot be undone.", [
+			{ text: "Cancel", style: "cancel" },
+			{
+				text: "Delete",
+				style: "destructive",
+				onPress: async () => {
+					const token = await AsyncStorage.getItem("token");
+					const res = await fetch(`http://localhost:8800/comments/${commentId}`, {
+						method: "DELETE",
+						headers: {
+							Authorization: `Bearer ${token}`,
+						},
+					});
+
+					if (res.ok) {
+						await queryClient.invalidateQueries({ queryKey: ["posts", postId] });
+						await queryClient.invalidateQueries({ queryKey: ["posts"] });
+					} else {
+						Alert.alert("Unable to delete comment");
+					}
+				},
+			},
+		]);
+	};
 
 	if (isLoading) {
 		return (
@@ -68,9 +134,12 @@ export default function Detail() {
 	}
 
 	return (
-		<ScrollView>
-			<PostCard post={post} />
-			<View style={{ alignItems: "center", padding: 16 }}>
+		<ScrollView contentInsetAdjustmentBehavior="automatic">
+			<PostCard
+				post={post}
+				onDeleted={() => router.back()}
+			/>
+			<View style={{ alignItems: "stretch", padding: 16, gap: 10 }}>
 				<TextInput
 					value={comment}
 					onChangeText={setComment}
@@ -80,14 +149,13 @@ export default function Detail() {
 						padding: 15,
 						borderWidth: 1,
 						borderColor: "#66666680",
-						marginBottom: 10,
 						borderRadius: 20,
 					}}
 					placeholder="Your reply..."
 				/>
 
 				<TouchableOpacity
-					onPress={() => {}}
+					onPress={addComment}
 					style={{
 						width: "100%",
 						padding: 15,
@@ -101,23 +169,37 @@ export default function Detail() {
 				</TouchableOpacity>
 
 				{post.comments.map(comment => {
+					const canDeleteComment =
+						auth?.id === comment.user.id || auth?.id === post.user.id;
+
 					return (
 						<View
 							key={comment.id}
 							style={{
-								marginVertical: 6,
+								width: "100%",
 								borderRadius: 10,
 								borderColor: "#66666666",
 								borderWidth: 1,
 								padding: 16,
 							}}>
-							<View>
-								<Text style={{ fontWeight: "bold" }}>
+							<View style={{ flexDirection: "row", gap: 10 }}>
+								<Text style={{ flexShrink: 1, fontWeight: "bold" }}>
 									{comment.user.name}
 								</Text>
+								{canDeleteComment && (
+									<TouchableOpacity
+										onPress={() => deleteComment(comment.id)}
+										style={{ marginLeft: "auto", padding: 4 }}>
+										<Ionicons
+											name="trash-outline"
+											color="red"
+											size={20}
+										/>
+									</TouchableOpacity>
+								)}
 							</View>
 							<View>
-								<Text style={{ fontSize: 16 }}>
+								<Text style={{ fontSize: 16, flexShrink: 1 }}>
 									{comment.body}
 								</Text>
 							</View>

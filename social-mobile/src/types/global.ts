@@ -3,7 +3,8 @@ export type PostType = {
     body: string;
     user: UserType;
     comments: CommentType[];
-    likes: [];
+    likeCount: number;
+    liked?: boolean;
     created: string;
 }
 
@@ -19,4 +20,5 @@ export type CommentType = {
     body: string;
     user: UserType;
     postId: number;
+    created?: string;
 }
