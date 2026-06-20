@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Geist, Geist_Mono, Inter } from "next/font/google";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -19,16 +19,23 @@ export const metadata: Metadata = {
 
 import type { GenreType } from "@/types/global";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import Link from "next/link";
+import { Play, Clapperboard } from "lucide-react";
+import { cn } from "@/lib/utils";
+
+const inter = Inter({subsets:['latin'],variable:'--font-sans'});
+
 
 async function fetchGenres(): Promise<GenreType[]> {
 	const res = await fetch("https://api.themoviedb.org/3/genre/movie/list", {
-        headers: {
-            Authorization: `Bearer ${process.env.TMDB_TOKEN}`,
-        }
-    });
+		headers: {
+			Authorization: `Bearer ${process.env.TMDB_TOKEN}`,
+		},
+	});
 
 	const data = await res.json();
-    return data.genres;
+	return data.genres;
 }
 
 export default async function RootLayout({
@@ -41,24 +48,37 @@ export default async function RootLayout({
 	return (
 		<html
 			lang="en"
-			className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}>
+			className={cn("h-full", "antialiased", geistSans.variable, geistMono.variable, "font-sans", inter.variable)}>
 			<body>
-				<header className="p-4 bg-gray-300 border-b border-gray-400/60">
-					<h1 className="text-3xl font-bold">Movie App</h1>
+				<header className="p-8 0 border-b border-gray-400/60 flex justify-between">
+					<h1 className="text-3xl font-bold flex gap-3 items-center">
+                        <Clapperboard size={28} />
+                        Movie App
+                    </h1>
+                    <form className="flex gap-1">
+                        <Input placeholder="Search" />
+                        <Button>Search</Button>
+                    </form>
 				</header>
 
 				<main className="flex">
-					<aside className="w-50 min-h-150 bg-gray-300 p-4 flex flex-col gap-1">
-						<Button variant="outline">
-							All Genres
+					<aside className="w-50 min-h-150 p-4 border-r border-gray-400/60 flex flex-col gap-1 shrink-0">
+						<Button variant="outline" size="lg" asChild>
+							<Link href={"/"} className="flex gap-1 justify-start">
+                                <Play />
+                                All Genres
+                            </Link>
 						</Button>
 
 						{genres.map(genre => {
 							return (
-								<Button
-									variant="outline"
-									key={genre.id}>
-									{genre.name}
+								<Button asChild size="lg" variant="outline" key={genre.id}>
+									<Link
+										href={`/genre/${genre.name}/${genre.id}`}
+										className="flex gap-1 justify-start">
+										<Play />
+										{genre.name}
+									</Link>
 								</Button>
 							);
 						})}
